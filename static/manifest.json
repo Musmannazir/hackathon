@@ -1,0 +1,29 @@
+{
+  "name": "دوا پہچان - Dawa Pahchan",
+  "short_name": "دوا پہچان",
+  "description": "دوا کی جانچ اور تصدیق - Medicine Recognition & Safety Check",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F1F5F9",
+  "theme_color": "#059669",
+  "orientation": "portrait-primary",
+  "lang": "ur",
+  "dir": "rtl",
+  "categories": ["health", "medical"],
+  "icons": [
+    {
+      "src": "/static/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [],
+  "prefer_related_applications": false
+}

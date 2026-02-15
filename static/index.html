@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+  <meta name="theme-color" content="#059669">
+  <meta name="description" content="دوا پہچان - اپنی دوا کی جانچ اور تصدیق کریں">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="دوا پہچان">
+  <title>دوا پہچان</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/static/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/static/icon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- Hidden camera input (always accessible regardless of screen) -->
+    <input type="file" accept="image/*" capture="environment" id="camera-input" class="hidden-input">
+
+    <!-- ===== PROFILE SETUP SCREEN ===== -->
+    <div id="screen-profile" class="screen hidden">
+      <div class="screen-content">
+        <div class="logo-section">
+          <div class="logo" aria-hidden="true">💊</div>
+          <h1 class="app-title">دوا پہچان</h1>
+          <p class="app-subtitle">اپنی دوا کی جانچ کریں</p>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">اپنی معلومات</h2>
+          <p class="card-subtitle">بہتر رہنمائی کے لیے یہ معلومات درکار ہیں</p>
+
+          <!-- Age -->
+          <div class="form-group">
+            <label class="form-label" for="inp-age">عمر <span class="label-hint">(سال)</span></label>
+            <input type="number" id="inp-age" class="form-input" inputmode="numeric" placeholder="مثلاً 35" min="0" max="120">
+          </div>
+
+          <!-- Gender -->
+          <div class="form-group">
+            <label class="form-label">جنس</label>
+            <div class="btn-group">
+              <button type="button" class="select-btn" data-field="gender" data-value="male" aria-label="مرد">
+                <span class="select-icon" aria-hidden="true">👨</span>
+                <span>مرد</span>
+              </button>
+              <button type="button" class="select-btn" data-field="gender" data-value="female" aria-label="عورت">
+                <span class="select-icon" aria-hidden="true">👩</span>
+                <span>عورت</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Weight -->
+          <div class="form-group">
+            <label class="form-label" for="inp-weight">وزن <span class="label-hint">(کلوگرام)</span></label>
+            <input type="number" id="inp-weight" class="form-input" inputmode="numeric" placeholder="مثلاً 70" min="1" max="300">
+          </div>
+
+          <!-- Pregnancy (shown only for females) -->
+          <div class="form-group hidden" id="grp-pregnancy">
+            <label class="form-label">کیا آپ حاملہ ہیں؟</label>
+            <div class="btn-group">
+              <button type="button" class="select-btn" data-field="pregnant" data-value="true" aria-label="ہاں">ہاں</button>
+              <button type="button" class="select-btn" data-field="pregnant" data-value="false" aria-label="نہیں">نہیں</button>
+            </div>
+          </div>
+
+          <!-- Allergies -->
+          <div class="form-group">
+            <label class="form-label" for="inp-allergies">الرجیاں <span class="label-hint">(اختیاری)</span></label>
+            <input type="text" id="inp-allergies" class="form-input" placeholder="مثلاً پینسلین، اسپرین">
+          </div>
+        </div>
+
+        <button class="primary-btn" id="btn-save-profile">
+          شروع کریں
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== HOME SCREEN ===== -->
+    <div id="screen-home" class="screen hidden">
+      <div class="header">
+        <span class="header-spacer"></span>
+        <span class="header-title">💊 دوا پہچان</span>
+        <button class="icon-btn" id="btn-settings" aria-label="ترتیبات">⚙️</button>
+      </div>
+
+      <div class="screen-content center-content">
+        <div class="scan-section">
+          <button class="scan-btn" id="btn-scan" aria-label="دوا اسکین کریں">
+            <span class="scan-icon" aria-hidden="true">📷</span>
+            <span class="scan-text">دوا اسکین کریں</span>
+            <span class="scan-hint">تصویر لیں یا گیلری سے چُنیں</span>
+          </button>
+          <p class="home-tip">
+            دوا کی پٹی، بوتل، یا نسخے کی تصویر لیں
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== LOADING SCREEN ===== -->
+    <div id="screen-loading" class="screen hidden">
+      <div class="screen-content center-content">
+        <div class="loading-section">
+          <div class="loading-icon" aria-hidden="true">💊</div>
+          <div class="loading-dots" aria-hidden="true">
+            <span>•</span><span>•</span><span>•</span>
+          </div>
+          <p class="loading-text">تجزیہ ہو رہا ہے</p>
+          <p class="loading-subtext">براہ کرم تھوڑا انتظار کریں</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== RESULTS SCREEN ===== -->
+    <div id="screen-results" class="screen hidden">
+      <div class="header">
+        <button class="icon-btn" id="btn-back" aria-label="واپس">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+        <span class="header-title">نتائج</span>
+        <span class="header-spacer"></span>
+      </div>
+
+      <div class="screen-content">
+        <!-- Image Preview -->
+        <div class="preview-card" id="preview-card">
+          <img id="preview-img" src="" alt="دوا کی تصویر">
+        </div>
+
+        <!-- Error Container (shown when not_medicine or error) -->
+        <div id="error-container" class="hidden">
+          <div class="card status-card status-warning">
+            <div class="status-label" id="error-message"></div>
+            <p class="card-content" style="margin-top:12px">دوبارہ صاف تصویر لے کر کوشش کریں۔</p>
+          </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-content">
+          <!-- Medicine Name -->
+          <div class="card">
+            <div class="card-emoji" aria-hidden="true">💊</div>
+            <h3 class="card-title" id="medicine-name"></h3>
+          </div>
+
+          <!-- What does this medicine do? -->
+          <div class="card">
+            <div class="card-emoji" aria-hidden="true">📋</div>
+            <h3 class="card-title">یہ دوا کیا ہے؟</h3>
+            <p class="card-content" id="explanation-text"></p>
+          </div>
+
+          <!-- Authenticity Check -->
+          <div class="card status-card" id="card-authenticity">
+            <div class="card-emoji" aria-hidden="true">🔍</div>
+            <h3 class="card-title">اصل یا نقلی؟</h3>
+            <div class="status-label" id="auth-label"></div>
+            <ul class="reasons-list" id="auth-reasons"></ul>
+            <div class="details-section">
+              <button class="details-btn" onclick="toggleDetails(this)">تفصیلات ▼</button>
+              <div class="details-content" id="auth-details"></div>
+            </div>
+          </div>
+
+          <!-- Safety Check -->
+          <div class="card status-card" id="card-safety">
+            <div class="card-emoji" aria-hidden="true">🛡️</div>
+            <h3 class="card-title">آپ کے لیے محفوظ؟</h3>
+            <div class="status-label" id="safety-label"></div>
+            <ul class="reasons-list" id="safety-warnings"></ul>
+            <div class="details-section">
+              <button class="details-btn" onclick="toggleDetails(this)">تفصیلات ▼</button>
+              <div class="details-content" id="safety-details"></div>
+            </div>
+          </div>
+
+          <!-- Dosage -->
+          <div class="card">
+            <div class="card-emoji" aria-hidden="true">⏰</div>
+            <h3 class="card-title">خوراک</h3>
+            <p class="card-content" id="dosage-text"></p>
+          </div>
+        </div>
+
+        <!-- Disclaimer -->
+        <div class="disclaimer">
+          ⚕️ یہ طبی مشورہ نہیں ہے۔ ہمیشہ ڈاکٹر سے مشورہ کریں۔
+        </div>
+
+        <!-- Scan Again -->
+        <button class="primary-btn" id="btn-scan-again">
+          📷 نئی دوا اسکین کریں
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
